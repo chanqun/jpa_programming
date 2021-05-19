@@ -198,3 +198,10 @@ JPQL 쿼리 실행
 - 영속 -> 준영속
 - 영속 상태의 엔티티가 영속성 컨텍스트에서 분리 (detatched)
 - 영속성 컨텍스트가 제공하는 기능을 사용 못 함
+
+```
+em.detatch(entity)
+em.clear()
+em.close()
+```
+
