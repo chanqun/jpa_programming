@@ -77,5 +77,18 @@ jpa 동일한 트랜잭션에서 조회한 엔티티는 같음을 보장
 
 ORM은 객체와 RDB 두 기둥위에 있는 기술
 
+
+
 ### JPA 시작하기
 
+#### JPA 구동 방식
+
+Persistence -> 생성 -> EntitiyManagerFactory -> EntitiyManager 생성
+
+​         |
+
+1. 설정 정보 조회
+
+​         |
+
+META-INF/persistence.xml
