@@ -92,3 +92,12 @@ Persistence -> 생성 -> EntitiyManagerFactory -> EntitiyManager 생성
 ​         |
 
 META-INF/persistence.xml
+
+
+
+#### JPQL
+
+- 테이블이 아닌 객체를 대상으로 검색하는 객체 지향 쿼리
+- SQL을 추상화해서 특정 데이터베이스 SQL에 의존 X
+- JPQL을 한마디로 정의하면 객체 지향 SQL
+- JPQL은 뒤에서 아주 자세히 다룸
