@@ -321,11 +321,11 @@ JPA 입장에서는 em.persist(member) 호출하자마자 insert를 날린다. �
 - 회원은 상품을 주문할 수 있다.
 - 주문 시 여러 종류의 상품을 선택할 수 있따.
 
-![img](./image/image1.png)
+<img src="./image/image1.png" alt="img" style="zoom:50%;" />
 
 
 
-![img](./image/image3.png)![img](./image/image2.png)
+<img src="./image/image3.png" alt="img" style="zoom:50%;" /><img src="./image/image2.png" alt="img" style="zoom:50%;" />
 
 ```java
 //관계형 DB에 맞춘 설계
