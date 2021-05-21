@@ -1,4 +1,7 @@
-package hellojpa;
+package jpabook.jpashop;
+
+import jpabook.jpashop.domain.Member;
+import jpabook.jpashop.domain.Order;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -15,6 +18,11 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Order order = em.find(Order.class, 1L);
+            Long memberId = order.getId();
+
+            Member member = em.find(Member.class, memberId);
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -25,25 +33,3 @@ public class JpaMain {
         emf.close();
     }
 }
-
-/* 강의 1
-    insert
-    Member member = new Member();
-    member.setId(2L);
-    member.setName("HelloB");
-    em.persist(member);
-
-    수정
-    Member findMember = em.find(Member.class, 1L);
-    findMember.setName("HelloJPA");
-
-    조회 나이가 18살 이상인 회원을 모두 검색하고 싶다면? --> JPQL이 해준다.
-    List<Member> result = em.createQuery("select m from Member as m", Member.class)
-    .setFirstResult(1)
-    .setMaxResults(10)
-    .getResultList();
-
-    for (Member member : result) {
-        System.out.println("member.name = " + member.getName());
-    }
-*/

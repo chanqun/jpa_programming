@@ -206,5 +206,145 @@ em.clear()
 em.close()
 ```
 
+
+
 ### 엔티티 매핑
+
+#### 객체와 테이블 매핑
+
+@Entity, @Table
+
+필드와 컬럼 매핑
+
+@Column
+
+기본 키 매핑
+
+@Id
+
+연관관계 매핑:
+
+@ManyToOne, @JoinColumn
+
+
+
+##### @Entity
+
+> @Entity가 붙은 클래스는 JPA가 관리, 엔티티라 한다.
+>
+> JPA를 사용해서 테이블과 매핑할 클래스는 @Entity필수
+>
+> !주의
+>
+> - 기본 생성자 필수 publi or protected
+> - final클래스, enum, interface, inner 클래스 사용 X
+> - 저장할 필드에 final사용 X
+
+
+
+#### 데이터베이스 스키마 자동 생성
+
+- DDL을 애플리케이션 실행 시점에 자동 생성
+- 테이블 중심 -> 객체 중심
+- 데이터베이스 방언을 활용해서 데이터베이스에 맞는 적절한 DDL생성
+- 이렇게 생성된 DDL은 개발 장비에서만 사용
+- 생성된 DDL은 운영서버에서는 사용하지 않거나 적절히 다듬은 후 사용
+
+> hibernate.hbm2ddl.auto option
+
+> 개발
+>
+> create : drop + create
+> create-drop : 끝난 후 drop (test-case 실행시)
+> update: 변경만 적용 지우는 것은 안된다.
+
+> staging
+> validate : 엔티티와 테이블이 정상 매핑 확인
+> none : 사용하지 않음
+
+##### DDL 생성 가능
+
+DDL 생성 기능은 DDL을 실행할때만 사용되고 JPA의 실행 로직에는 영향 주지 않음
+
+@Column(unique = true, length = 10) alter table이 실행 됨
+
+
+
+#### 필드와 컬럼 매핑
+
+> @Column 컬럼 매핑
+>
+> name 필드와 매핑할 테이블의 컬럼 이름 객체의 필드 이름 
+>
+> insertable,  updatable 등록, 변경 가능 여부 TRUE 
+>
+> nullable(DDL) null 값의 허용 여부를 설정한다. false로 설정하면 DDL 생성 시에 not null 제약조건이 붙는다.  unique(DDL) @Table의 uniqueConstraints와 같지만 한 컬럼에 간단히 유니크 제 약조건을 걸 때 사용한다. 
+>
+> columnDefinition (DDL)  데이터베이스 컬럼 정보를 직접 줄 수 있다.  ex) varchar(100) default ‘EMPTY' 필드의 자바 타입과 방언 정보를 사용해 서 적절한 컬럼 타입 length(DDL) 문자 길이 제약조건, String 타입에만 사용한다. 255 precision,  scale(DDL)  BigDecimal 타입에서 사용한다(BigInteger도 사용할 수 있다). 
+>
+>  precision은 소수점을 포함한 전체 자 릿수를, scale은 소수의 자릿수 다. 참고로 double, float 타입에는 적용되지 않는다. 아주 큰 숫자나 정 밀한 소수를 다루어야 할 때만 사용한다.  precision=19,  scale=2
+>
+> @Temporal 날짜 타입 매핑
+>
+> @Enumberated enum 타입 매핑
+>
+> @Lob BLOB CLOB 매핑
+>
+> @Transient 매핑 무시
+
+
+
+#### 기본 키 매핑
+
+직접 할당: @Id
+
+자동 생성: @GeneratedValue
+
+- IDENTITY : 데이터베이스에 위임, MYSQL
+
+!! null이 와서 id 값을 db에 넣어봐야 id 값을 확은 가능하다
+JPA 입장에서는 em.persist(member) 호출하자마자 insert를 날린다. 이시점에 영속성 컨텍스트에 id를 가져옴
+
+모아서 insert가 불가능하다.
+
+- SEQUENCE: 데이터베이스 시퀀스 오브젝트 사용, ORACLE, H2 
+
+50개 nextcall 미리하고 사용 allocationSize 50
+
+- TABLE : 키 생성용 테이블 사용, 모든 DB에서 사용 : 모든 데이터베이스에 적용 가능
+- AUTO : 방언에 따라 자동 지정, 기본값
+
+
+
+##### 요구사항 분석과 기본 매핑
+
+- 회원은 상품을 주문할 수 있다.
+- 주문 시 여러 종류의 상품을 선택할 수 있따.
+
+![img](./image/image1.png)
+
+
+
+![img](./image/image3.png)![img](./image/image2.png)
+
+```java
+//관계형 DB에 맞춘 설계
+@Entity
+@Table(name = "ORDERS")
+public class Order {
+
+    @Id
+    @GeneratedValue
+    @Column(name = "ORDER_ID")
+    private Long id;
+
+    @Column(name = "MEMBER_ID")
+    private Long memberId; 
+
+    private LocalDateTime orderDate;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+}
+```
 

@@ -1,40 +1,34 @@
 package hellojpa;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
 
-@Entity
-//@Table(name ="USER")
+//@Entity
 public class Member {
 
-    @Id
-    private Long id;
-    //@Column(name = "123")
-    private String name;
-
     public Member() {
+
     }
 
-    public Member(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    @Id
+    private String id;
 
-    public Long getId() {
+    @Column(name = "name")
+    private String userName;
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
