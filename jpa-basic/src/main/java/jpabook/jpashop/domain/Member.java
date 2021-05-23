@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Entity
+//@Entity
 public class Member {
 
     @Id @GeneratedValue
@@ -14,7 +14,7 @@ public class Member {
     private String name;
     private String city;
     private String street;
-    private String zipcode;
+    private String zipCode;
 
     public Long getId() {
         return id;
@@ -48,11 +48,11 @@ public class Member {
         this.street = street;
     }
 
-    public String getZipcode() {
-        return zipcode;
+    public String getZipCode() {
+        return zipCode;
     }
 
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 }
