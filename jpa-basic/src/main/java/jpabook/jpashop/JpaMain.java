@@ -1,9 +1,15 @@
-package jpateam;
+package jpabook.jpashop;
+
+import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.domain.OrderItem;
+import jpateam.Member;
+import jpateam.Team;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.List;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -16,19 +22,14 @@ public class JpaMain {
 
         try {
 
-            Team team = new Team();
-            team.setName("TeamA");
-            em.persist(team);
+            Order order = new Order();
+            //order.addOrderIem(new OrderItem());
+            em.persist(order);
 
-            Member member = new Member();
-            member.setName("member1");
-            member.setTeam(team); //단방향 연관관계 설정, 참조 저장
-            em.persist(member);
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
 
-            Member findMember = em.find(Member.class, member.getId());
-
-            Team findTeam = findMember.getTeam();
-            System.out.println("findTeam = " + findTeam.getName());
+            em.persist(orderItem);
 
             tx.commit();
         } catch (Exception e) {
