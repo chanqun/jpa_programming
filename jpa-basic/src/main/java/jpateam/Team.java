@@ -17,6 +17,10 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "LOCKER_ID")
+    private Locker locker;
+
     public Long getId() {
         return id;
     }
