@@ -547,3 +547,12 @@ public void changeTeam(Team team) {
 - @DiscriminatorColumn (name="DTYPE") : 무엇 때문에 들어왔는지 같이 표시해줌
 - @DiscriminatorValue("A")
 
+
+
+#### @MappedSuperclass
+
+- 공통 매핑 정보가 필요할 때
+
+> - 테이블과 관계 없고, 단순히 엔티티가 공통으로 사용하는 매핑 정보를 모으는 역할
+> - 주로 등록일, 수정일, 등록자, 수정자 같은 전체 엔티티에서 공통으로 적용하는 정보를 모을 때 사용
+> - 참고: @Entity 클래스는 엔티티나 @MappedSuperclass로 지정한 클래스만 상속 가능
