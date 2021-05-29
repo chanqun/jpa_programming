@@ -1,6 +1,7 @@
 package jpabook.jpashop;
 
 import jpabook.jpashop.domain.Book;
+import jpabook.jpashop.domain.Member;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -17,11 +18,18 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Book book = new Book();
-            book.setName("JPA");
-            book.setAuthor("김영한");
+            Member member = new Member();
+            member.setName("hello");
 
-            em.persist(book);
+            em.persist(member);
+
+            em.flush();
+            em.clear();
+
+            //Member findMember = em.find(Member.class, member.getId());
+            Member findMember = em.getReference(Member.class, member.getId());
+
+            System.out.println("findMember" + findMember.getId());
 
             tx.commit();
         } catch (Exception e) {
