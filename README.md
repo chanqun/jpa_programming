@@ -1068,3 +1068,39 @@ where (select count(o) from Order o where m = o.member) > 0
 > 사용하는 DB 방언을 상속받고, 사용자 정의 함수를 등록한 다. 
 >
 > select function('group_concat', i.name) from Item i
+
+##### 경로 표현식
+!! join 쿼리가 묵시적으로 나가기 때문에 join이 나타나게 짜면 좋다.
+
+--- 명시적 조인 사용하기
+
+상태필드 - 단순히 값을 저장하기 위한 필드 m.username
+연관필드 - 연관관계를 위한 필드
+      단일 값 연관 필드 : 묵시적 내부 조인 발생, 탐색 o m.team.name (many to many, one to one)
+      컬렉션 값 연관 경로 : 묵시적 내부 조인 발생, 탐색 x -> FROM 절에서 명시적 조인을 통해 별칭을 얻으면 별칭을 통해 탐색 가능
+
+##### JPQL fetch join
+- SQL 조인 종류 X
+- JPQL에서 성능 최적화를 위해 제공하는 기능
+- 연관된 엔티티나 컬렉션을 SQL 한 번에 함께 조회하는 기능
+- join fetch 명령어 사용
+
+!!!
+```sql
+JPQL
+SELECT m FROM Member m join jetch m.team
+SQL
+SELECT M.*, T.* FROM MEMBER M INNER JOIN TEAM T ON M.TEAM_ID = T.ID
+```
+
+회원 100명 -> N + 1 문제가 발생한다.
+fetch를 하면 query 한 번으로 다 가져온다.
+
+fetch join하면 컬렉션 데이터가 뻥튀기 된다. 디비 입장에서는 1:N 이면 데이터가 뻥튀기 된다.
+
+DISTINCT를 추가하면 전부 가져온 뒤 collection에서 중복을 해결해준다.
+
+##### 페치 조인과 일반 조인의 차이
+- 일반 조인 실행시 연관된 엔티티를 함께 조회하지 않음
+- JPQL은 결과를 반환할 때 연관관계 고려X
+- SELECT 절에 지정한 엔티티만 조회
