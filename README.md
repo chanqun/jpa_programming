@@ -1104,3 +1104,56 @@ DISTINCT를 추가하면 전부 가져온 뒤 collection에서 중복을 해결�
 - 일반 조인 실행시 연관된 엔티티를 함께 조회하지 않음
 - JPQL은 결과를 반환할 때 연관관계 고려X
 - SELECT 절에 지정한 엔티티만 조회
+
+### 페치 조인의 특징과 한계 !!!!!!!!!!!!!
+- 페치 조인 대상에는 별칭을 줄 수 없다.
+- 둘 아상의 컬렉션은 페치 조인 할 수 없다.
+- 컬렉션을 페치 조인하면 페이징 API를 사용할 수 없다.
+    - 경고를 남기고 메모리에서 페이징 : 일대일, 다대일 같은 단일 값 연관 필드들은 페치 조인해도 페이징 가능
+    - 엔티티에 @BatchSize(100)으로 하면 in해서 필요한 개수를 가져온다. >> global setting 으로 할 수 있다.
+      (hibernate.default_batch_fetch_size)
+      
+- 연과된 엔티티들을 SQL 한 번으로 조회 - 성능 최적화
+- 엔티티에 직접 적용하는 글로벌 로딩 전략보다 우선한 -- @OneToMany(fetch = FetchType.LAZY) //글로벌 로딩 전략
+- 실무에서 글로벌 로딩 전략은 모두 지연 로딩
+- 최적화가 필요한 곳은 페치 조인 적용
+  (데이터 씽크 맞추는 대량 api - fetch 조인하고 @BatchSize  40분 -> 4분도 안 걸리게 됐다.)
+  선언적으로 
+  
+
+##### JPQL - 다형성 쿼리
+```sql
+select i from item i where type(i) IN (Book, Movie)
+type(i) -> dtype으로 바뀜
+
+select i from item i where treat(i as book).author = "kim"
+-> select i.* from item i where i.dtype = 'b' and i.author = "kim"
+```
+
+##### JPQL - 엔티티 직접 사용
+- JPQL에서 엔티티르 직접 사용하면 SQL에서 해당 엔티티의 기본 키 값을 사용
+
+```sql
+select count(m.id) from Member m // 엔티티의 아이디를 사용
+select count(m) from Member m // 엔티티를 직저 사용
+--> 결국 id를 이용해서 만드는 쿼리로 바뀜
+```
+
+##### JPQL - Named쿼리 - 정적 쿼리
+- 미리 정의해서 이름을 부여해두고 사용하는 JPQL
+- 정적 쿼리
+- application 로딩 시점에 sql로 parsing해서 캐싱하고 있음
+- 애플리케이션 로딩 시점에 쿼리를 검증
+
+spring data jpa 에서는 @Query 사용하면 named query로 등록 된다.
+
+
+##### 벌크 연산
+- 재고가 10개 미망인 모든 상품의 가격을 10% 상승하려면?
+- JPA 변경 감지 기능으로 실행하려면 너무 많은 SQL 실행
+
+```java
+em.createQuery("update Member m set m.age = 20")
+    .excuteUpdate()
+```
+
