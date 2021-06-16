@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/datajpa.iml" filepath="$PROJECT_DIR$/datajpa.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jpa-basic/jpa-basic.iml" filepath="$PROJECT_DIR$/jpa-basic/jpa-basic.iml" />
-    </modules>
-  </component>
-</project>
