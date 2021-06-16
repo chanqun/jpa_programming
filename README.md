@@ -1156,4 +1156,7 @@ spring data jpa 에서는 @Query 사용하면 named query로 등록 된다.
 em.createQuery("update Member m set m.age = 20")
     .excuteUpdate()
 ```
-
+!!! 벌크 연산 주의
+- 벌크 연산은 영속성 컨텍스트를 무시하고 데이터베이스에 직접 쿼리
+- 벌크 연산을 먼저 실행
+- 벌크 연산 수행 후 영속성 컨텍스트 초기화(!!)
