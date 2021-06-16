@@ -9,7 +9,8 @@ import static javax.persistence.FetchType.LAZY;
 //@Entity
 public class Category extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     private String name;
@@ -23,8 +24,8 @@ public class Category extends BaseEntity {
 
     @ManyToMany
     @JoinTable(name = "CATEGOY_ITEM",
-        joinColumns = @JoinColumn(name = "CATEGORY_ID"),
-        inverseJoinColumns = @JoinColumn(name = "ITEM_ID")
+            joinColumns = @JoinColumn(name = "CATEGORY_ID"),
+            inverseJoinColumns = @JoinColumn(name = "ITEM_ID")
     )
     private List<Item> items = new ArrayList<>();
 }
