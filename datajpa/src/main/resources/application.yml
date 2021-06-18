@@ -4,10 +4,10 @@ spring:
     url: jdbc:mysql://localhost:3306/datajpa
     username: root
     password: 1234
-jpa:
-  hibernate:
-    ddl-auto: update
-  properties:
+  jpa:
     hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
   #        format_sql: true
-  dialect: org.hibernate.dialect.MySQL8Dialect
+      dialect: org.hibernate.dialect.MySQL8Dialect
