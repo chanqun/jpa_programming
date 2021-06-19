@@ -60,4 +60,17 @@ class MemberRepositoryTest {
         }
     }
 
+    @Test
+    fun findMemberDto() {
+        val team = Team("korea")
+        teamRepository.save(team)
+
+        val member = Member("chanqun", 10, team)
+        memberRepository.save(member)
+
+        val findMemberDto = memberRepository.findMemberDto()
+
+        findMemberDto.stream().forEach { println(it) }
+    }
+
 }

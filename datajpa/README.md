@@ -28,3 +28,8 @@ named query를 제공해줌 별로 안 씀
 fun findByName(@Param("username") username: String) List<Member>
 ```
 
+##### Query로 DTO 조회
+```kotlin
+@Query("select m.username from Member m")
+fun findUsernameList(): List<String>
+```
