@@ -33,3 +33,14 @@ fun findByName(@Param("username") username: String) List<Member>
 @Query("select m.username from Member m")
 fun findUsernameList(): List<String>
 ```
+
+
+##### 파라미터 바인딩
+위치기반 , 이름기반, collection
+```kotlin
+@Query("select m from Member m where m.username = :name")
+ fun findMembers(@Param("name") username: String): Member
+
+@Query("select m from Member m where m.username in :names")
+fun findByNames(@Param("names") names: List<String>): List<Member>
+```
