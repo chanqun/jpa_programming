@@ -18,6 +18,9 @@ class MemberRepositoryTest {
     @Autowired
     lateinit var memberRepository: MemberRepository
 
+    @Autowired
+    lateinit var teamRepository: TeamRepository
+
     @Test
     fun testMember() {
         val teamA = Team("korea")
@@ -38,6 +41,23 @@ class MemberRepositoryTest {
         assertThat(findMember.id).isEqualTo(member.id)
         assertThat(findMember.username).isEqualTo(member.username)
         assertThat(findMember).isEqualTo(member)
+    }
+
+    @Test
+    fun `쿼리 메소드`() {
+        val teamB = Team("korea2")
+        teamRepository.save(teamB)
+
+        val member3 = Member("chanqun2", 29, teamB)
+        val member4 = Member("chanqun3", 24, teamB)
+        memberRepository.save(member3)
+        memberRepository.save(member4)
+
+        val memberList = memberRepository.findByUsernameAndAgeGreaterThan("chanqun2", 10)
+
+        memberList.stream().forEach {
+            println("${it.id}, ${it.username}")
+        }
     }
 
 }
