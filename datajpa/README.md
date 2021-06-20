@@ -44,3 +44,38 @@ fun findUsernameList(): List<String>
 @Query("select m from Member m where m.username in :names")
 fun findByNames(@Param("names") names: List<String>): List<Member>
 ```
+
+##### 반환타입
+
+- Optional, List<>, Member 등이 있음
+
+##### 기존 JPA 페이징과 정렬
+```kotlin
+fun findByPage(age: Int, offset: Int, limit: Int) {
+    return em.createQuery("select m from Member m where m.age = :age order by m.username desc")
+        .setParameter("age", age)
+        .setFirstResult(offset)
+        .setMaxResults(limit)
+        .getResultList()
+}
+
+fun totalCount(age: Int) {
+    return em.createQuery("select count(m) from Member m where m.age = :age", Long::class.java)
+        .setParameter("age", age)
+        .getSingleResult()
+}
+```
+
+##### Spring JPA 페이징과 정렬
+org.springframework.data.domain.Sort
+org.springframework.data.domain.Pageable
+
+```
+org.springframework.data.domain.Page : 추가 count 쿼리 결과를 포함하는 페이징
+org.springframework.data.domain.Slice : 추가 count 쿼리 없이 다음 페이지만 확인 가능(내부적으로 limit + 1)
+List: 추가 count 쿼리 없이 결과만 반환
+```
+
+@Query에서 countQuery를 나눌 수 있음 - 카운트 쿼리는 쉽게 설정할 수 있음
+
+api에서 엔티티를 넘기면 안 된다. dto로 넘겨라!

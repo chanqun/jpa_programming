@@ -4,7 +4,11 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.transaction.annotation.Transactional
+import study.datajpa.dto.MemberDto
 import study.datajpa.entity.Member
 import study.datajpa.entity.Team
 import javax.persistence.EntityManager
@@ -71,6 +75,39 @@ class MemberRepositoryTest {
         val findMemberDto = memberRepository.findMemberDto()
 
         findMemberDto.forEach { println(it) }
+    }
+
+    @Test
+    fun `spring page`() {
+        memberRepository.save(Member("chanqun", 29))
+        memberRepository.save(Member("chanqun1", 29))
+        memberRepository.save(Member("chanqun2", 29))
+        memberRepository.save(Member("chanqun3", 29))
+        memberRepository.save(Member("chanqun4", 29))
+
+        val pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"))
+
+        val page = memberRepository.findByAge(29, pageRequest)
+
+        val map = page.map { member -> MemberDto(member.id!!, member.username) }
+
+        map.forEach{
+            println(it)
+        }
+
+        val content = page.content
+        val totalElements = page.totalElements
+
+        content.forEach{
+            println(it.username)
+        }
+
+        assertThat(content.size).isEqualTo(3)
+        assertThat(totalElements).isEqualTo(5)
+        assertThat(page.number).isEqualTo(0)
+        assertThat(page.totalPages).isEqualTo(2)
+        assertThat(page.isFirst).isTrue
+        assertThat(page.hasNext()).isTrue
     }
 
 }
