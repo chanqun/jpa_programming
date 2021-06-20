@@ -55,7 +55,7 @@ class MemberRepositoryTest {
 
         val memberList = memberRepository.findByUsernameAndAgeGreaterThan("chanqun2", 10)
 
-        memberList.stream().forEach {
+        memberList.forEach {
             println("${it.id}, ${it.username}")
         }
     }
@@ -70,7 +70,7 @@ class MemberRepositoryTest {
 
         val findMemberDto = memberRepository.findMemberDto()
 
-        findMemberDto.stream().forEach { println(it) }
+        findMemberDto.forEach { println(it) }
     }
 
 }
