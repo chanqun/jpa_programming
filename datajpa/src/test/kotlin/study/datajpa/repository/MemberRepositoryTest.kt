@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.transaction.annotation.Transactional
 import study.datajpa.dto.MemberDto
@@ -91,14 +90,14 @@ class MemberRepositoryTest {
 
         val map = page.map { member -> MemberDto(member.id!!, member.username) }
 
-        map.forEach{
+        map.forEach {
             println(it)
         }
 
         val content = page.content
         val totalElements = page.totalElements
 
-        content.forEach{
+        content.forEach {
             println(it.username)
         }
 
@@ -125,4 +124,33 @@ class MemberRepositoryTest {
 
         assertThat(updateCount).isEqualTo(3)
     }
+
+    @Test
+    fun `findMember LAZY`() {
+        val teamA = Team("teamA")
+        val teamB = Team("teamB")
+
+        teamRepository.save(teamA)
+        teamRepository.save(teamB)
+
+        val member = Member("chanqun", 29, teamA)
+        val member1 = Member("toby", 40, teamB)
+        memberRepository.save(member)
+        memberRepository.save(member1)
+
+        em.flush()
+        em.clear()
+
+        //select Member 1
+        //when N + 1
+        val findAll = memberRepository.findAll()
+        // proxy만 가져온다.
+
+        findAll.forEach {
+            println(it.username)
+            println(it.team!!.name)
+        }
+    }
+
+
 }

@@ -24,4 +24,7 @@ interface MemberRepository : JpaRepository<Member, Long> {
     @Modifying(clearAutomatically = true)
     @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
     fun bulkAgePlus(@Param("age") age: Int): Int
+
+    @Query("select m from Member m left join fetch m.team")
+    fun findMemberFetchJoin(): List<Member>
 }
