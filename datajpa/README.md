@@ -79,3 +79,13 @@ List: 추가 count 쿼리 없이 결과만 반환
 @Query에서 countQuery를 나눌 수 있음 - 카운트 쿼리는 쉽게 설정할 수 있음
 
 api에서 엔티티를 넘기면 안 된다. dto로 넘겨라!
+
+
+#### 벌크성 수정 쿼리
+```kotlin
+fun bulkAgePlus(age: Int) {
+    return em.createQuery("update Member m set m.age = m.age + 1 where m.age >= :age")
+        .setParameter("age", age)
+        .excuteUpdate()
+}
+```

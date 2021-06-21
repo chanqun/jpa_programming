@@ -110,4 +110,19 @@ class MemberRepositoryTest {
         assertThat(page.hasNext()).isTrue
     }
 
+    @Test
+    fun `Modifying`() {
+        memberRepository.save(Member("chanqun", 21))
+        memberRepository.save(Member("chanqun1", 22))
+        memberRepository.save(Member("chanqun2", 19))
+        memberRepository.save(Member("chanqun3", 18))
+        memberRepository.save(Member("chanqun4", 30))
+
+        val updateCount = memberRepository.bulkAgePlus(20)
+
+        // bulk 연산 후에 em.clear()을 해서 영속성 컨텍스트를 날려주자
+        // clear automatically 사용해도 됨
+
+        assertThat(updateCount).isEqualTo(3)
+    }
 }

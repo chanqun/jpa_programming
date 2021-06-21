@@ -3,6 +3,7 @@ package study.datajpa.repository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import study.datajpa.dto.MemberDto
@@ -19,4 +20,8 @@ interface MemberRepository : JpaRepository<Member, Long> {
 
     fun findByAge(age: Int, pageable: Pageable): Page<Member>
     //totalCount 가 넘 많으면 slice가 나을 수 있음
+
+    @Modifying(clearAutomatically = true)
+    @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
+    fun bulkAgePlus(@Param("age") age: Int): Int
 }
