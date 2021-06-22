@@ -152,5 +152,27 @@ class MemberRepositoryTest {
         }
     }
 
+    @Test
+    fun queryHint() {
+        val user = memberRepository.save(Member("chanqun", 29))
+        em.flush()
+        em.clear()
 
+//        val findById = memberRepository.findById(user.id!!).get()
+//        findById.username = "member2"
+        //데이터를 바꾸기 위해 데이터를 가지고 있어야한다
+        // 변경하지 않고 조회를 하려고 하더라도 내부적으로 가지고 있다. - 하이버네이트가 내부적으로 힌트를 제공해준다.
+
+        val findMember = memberRepository.findReadOnlyByUsername("chanqun")
+
+        println(findMember.username)
+    }
+
+    @Test
+    fun lock() {
+        val user = memberRepository.save(Member("chanqun", 29))
+
+        //for update 가 붙음
+        val memberList = memberRepository.findLockByUsername("chanqun")
+    }
 }

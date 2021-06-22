@@ -94,3 +94,6 @@ fun bulkAgePlus(age: Int) {
 jpql을 사용하지 않고 spring에서 제공하는 함수와 fetch join을 사용하고 싶다
 @EntityGraph(attributePaths = {"team"})
 Named로 설정하고 EntityGraph를 사용할 수 있음
+
+
+#### JPA Hint & Lock
