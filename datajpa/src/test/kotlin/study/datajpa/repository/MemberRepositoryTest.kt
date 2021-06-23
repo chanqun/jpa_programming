@@ -175,4 +175,9 @@ class MemberRepositoryTest {
         //for update 가 붙음
         val memberList = memberRepository.findLockByUsername("chanqun")
     }
+
+    @Test
+    fun callCustom() {
+        val result = memberRepository.findMemberCustom()
+    }
 }

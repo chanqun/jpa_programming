@@ -9,7 +9,8 @@ import study.datajpa.entity.Member
 import javax.persistence.LockModeType
 import javax.persistence.QueryHint
 
-interface MemberRepository : JpaRepository<Member, Long> {
+interface MemberRepository : JpaRepository<Member, Long>, MemberRepositoryCustom {
+
     fun findByUsernameAndAgeGreaterThan(username: String, age: Int): List<Member>
 
     @Query("select m from Member m where m.username = :username and m.age = :age")
