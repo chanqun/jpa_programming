@@ -180,4 +180,18 @@ class MemberRepositoryTest {
     fun callCustom() {
         val result = memberRepository.findMemberCustom()
     }
+
+    @Test
+    fun JpaEventBaseEntity() {
+        val member = Member("chanqun", 29)
+        memberRepository.save(member)
+
+        member.username = "sung"
+        em.flush()
+        em.clear()
+
+        assertThat(member.createdDate).isNotNull
+        assertThat(member.lastModifiedDate).isNotNull
+        assertThat(member.createdDate).isNotEqualTo(member.lastModifiedDate)
+    }
 }
