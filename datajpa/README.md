@@ -118,4 +118,4 @@ interface만들고 하는 것이 복잡하다.
 - 등록일, 수정일, 등록자, 수정자
 jpa 이벤트로 해결한 것, JpaBaseEntity
   
-스프링 데이터 JPA ttkdyd
+스프링 데이터 JPA 사용 annotation 쓰면됨
