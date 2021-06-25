@@ -119,3 +119,26 @@ interface만들고 하는 것이 복잡하다.
 jpa 이벤트로 해결한 것, JpaBaseEntity
   
 스프링 데이터 JPA 사용 annotation 쓰면됨
+
+##### 페이징과 정렬
+- page
+- sort
+- size 가능 
+
+```kotlin
+    @GetMapping("/members")
+    fun list(@PageableDefault(size = 3) pageable: Pageable) : Page<Member> {
+        // members?page=0&size=3&sort=id,desc&sort=username,desc 도 사용 가능하다
+        return memberRepository.findAll(pageable)
+    }
+```
+> default size 20 인데 바꾸고 싶을때
+> data.web.pageable.default-page-size 10
+> max-page-size 2000 로 설정할 수 있다.
+
+페이지를 1부터 하고 싶을 때
+MyPage 로 반환한다. --> 직접구현하는게 나을듯
+```
+spring.data.web.pageable.one-indexed-parameters: true
+--> 페이지 0과 1이 같은 값이 나오게 됨, pageable내 객체가 안 맞음 !!!
+```
