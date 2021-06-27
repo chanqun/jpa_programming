@@ -168,11 +168,36 @@ public boolean isNew() {
 ```
 
 ##### 나머지 기능들
-- Specifications(명세)
+1.Specifications(명세)
 
 스프링 데이터 JPA Criteria를 활용해서 이 개념을 사용할 수 있도록 지원
 -> 실무에서 가능한 쓰지 마세요 (쓰기도 어렵네)
 
-- Query By Example
-- Projections
-- 네이티브 쿼리
+2.Query By Example
+ 
+> 동적 쿼리를 편리하게 처리
+> 도메인 객체를 그대로 사용
+> 데이터 저장소를 RDB에서 NoSQL로 변경해도 코드 변경이 없게 추상화 되어 있음
+> 스프링 데이터 JPA 인터페이스에 이미 포함
+> 
+> inner join만 제대로 작동 다른 조인은 제대로 작동 안 함
+> 매칭 조건이 매우 단순
+
+
+3.Projections
+
+엔티티 대신에 DTO를 편리하게 조회할 때 사용
+
+프로젝션 대상이 root엔티티면 유용하지만 복잡해지면 최적하가 안 된다.
+Query DSL을 사용해야한다.
+
+kotlin projections
+https://suhwan.dev/2018/12/25/spring-data-jpa-projection-tips/
+
+
+4.네이티브 쿼리 - 정말 어쩔 수 없을 때 사용한다.
+sort가 문제 있을 수 있음
+동적쿼리불가, jpql처럼 애플리케이션 로딩 시점에 문법 확인 불가
+
+
+--> Query DSL 영한님은 조인을 쉽게 사용할 수 있는 기술을 좋아한다.  
