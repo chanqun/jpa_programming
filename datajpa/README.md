@@ -142,3 +142,37 @@ MyPage 로 반환한다. --> 직접구현하는게 나을듯
 spring.data.web.pageable.one-indexed-parameters: true
 --> 페이지 0과 1이 같은 값이 나오게 됨, pageable내 객체가 안 맞음 !!!
 ```
+
+##### 스프링 데이터 JPA 구현체 분석
+
+@Repository
+@Transactional(readOnly = true)
+
+- save(entity)
+
+##### 새로운 엔티티를 구별하는 방법
+
+```kotlin
+entityInformation.isNew() 
+// 까지 타고 들어가서 id가 생기게 됨
+```
+Long인 경우 null, long인 경우 0으로 판단
+
+
+@GeneratedValue 가 없을 경우 
+```java
+@Override
+public boolean isNew() {
+    return createdDate == null;
+}
+```
+
+##### 나머지 기능들
+- Specifications(명세)
+
+스프링 데이터 JPA Criteria를 활용해서 이 개념을 사용할 수 있도록 지원
+-> 실무에서 가능한 쓰지 마세요 (쓰기도 어렵네)
+
+- Query By Example
+- Projections
+- 네이티브 쿼리

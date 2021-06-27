@@ -194,4 +194,5 @@ class MemberRepositoryTest {
         assertThat(member.lastModifiedDate).isNotNull
         assertThat(member.createdDate).isNotEqualTo(member.lastModifiedDate)
     }
+
 }
