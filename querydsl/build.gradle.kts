@@ -31,10 +31,8 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     //querydsl - 추가
-    implementation("org.modelmapper:modelmapper:$modelMapperVer")
     implementation("com.querydsl:querydsl-jpa:$queryDslVer")
     kapt("com.querydsl:querydsl-apt:$queryDslVer:jpa")
-    annotationProcessor("com.querydsl:querydsl-apt:$queryDslVer:jpa")
 }
 
 tasks.withType<KotlinCompile> {
