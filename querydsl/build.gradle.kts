@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.5.20"
     kotlin("plugin.spring") version "1.5.20"
     kotlin("plugin.jpa") version "1.5.20"
+    kotlin("kapt") version "1.5.10"
 }
 
 group = "com.example"
@@ -16,14 +17,24 @@ repositories {
     mavenCentral()
 }
 
+val queryDslVer = "4.4.0"
+val modelMapperVer = "2.3.8"
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    //querydsl - 추가
+    implementation("org.modelmapper:modelmapper:$modelMapperVer")
+    implementation("com.querydsl:querydsl-jpa:$queryDslVer")
+    kapt("com.querydsl:querydsl-apt:$queryDslVer:jpa")
+    annotationProcessor("com.querydsl:querydsl-apt:$queryDslVer:jpa")
 }
 
 tasks.withType<KotlinCompile> {
