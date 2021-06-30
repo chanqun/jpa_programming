@@ -1,4 +1,4 @@
-package study.datajpa.entity
+package com.example.querydsl.entity
 
 import javax.persistence.*
 

@@ -1,4 +1,4 @@
-package study.datajpa.entity
+package com.example.querydsl.entity
 
 import javax.persistence.*
 
@@ -14,8 +14,7 @@ class Member(
     @Id @GeneratedValue
     @Column(name = "member_id")
     var id: Long? = null
-
-) : BaseEntity() {
+) {
     fun changeTeam(team: Team) {
         this.team = team
         team.members.add(this)
