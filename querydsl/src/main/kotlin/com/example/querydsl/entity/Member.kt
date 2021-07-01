@@ -4,7 +4,7 @@ import javax.persistence.*
 
 @Entity
 class Member(
-    var username: String,
+    var username: String? = null,
     var age: Int,
 
     @ManyToOne(fetch = FetchType.LAZY)

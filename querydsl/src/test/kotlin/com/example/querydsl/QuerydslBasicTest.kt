@@ -98,4 +98,56 @@ class QuerydslBasicTest {
         assertThat(findMember!!.username).isEqualTo("member2")
         assertThat(findMember.age).isEqualTo(29)
     }
+
+    @Test
+    fun `resultFetch`() {
+        val fetch = queryFactory
+            .selectFrom(member)
+            .fetch()
+
+        val fetchOne = queryFactory
+            .selectFrom(member)
+            .fetchOne()
+
+        val fetchFirst = queryFactory
+            .selectFrom(member)
+            .fetchFirst()
+
+        // total count와 모든 검색목록을 가져온다.
+        val result = queryFactory
+            .selectFrom(member)
+            .fetchResults()
+
+        val total = result.total
+        val results = result.results
+
+        // count만 가져옴
+        queryFactory
+            .selectFrom(member)
+            .fetchCount()
+    }
+
+    /**
+     * 회원 정렬 순서
+     * 1. 회원 나이 내림차순(desc)
+     * 2. 회원 이름 올림차순(asc)
+     * 단 2에서 회원 이름이 없으면 마지막에 출력 (nulls last)
+     * nulls First도 있음
+     */
+    @Test
+    fun sort() {
+        em.persist(Member(null, 100))
+        em.persist(Member("member5", 100))
+        em.persist(Member("member6", 100))
+
+        val orderBy = queryFactory
+            .selectFrom(member)
+            .where(member.age.eq(100))
+            .orderBy(member.age.desc(), member.username.asc().nullsLast())
+            .fetch()
+
+        assertThat(orderBy[0].username).isEqualTo("member5")
+        assertThat(orderBy[1].username).isEqualTo("member6")
+        assertThat(orderBy[2].username).isNull()
+    }
 }
