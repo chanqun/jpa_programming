@@ -2,6 +2,7 @@ package com.example.querydsl
 
 import com.example.querydsl.entity.Member
 import com.example.querydsl.entity.QMember
+import com.example.querydsl.entity.QMember.member
 import com.example.querydsl.entity.Team
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -19,8 +20,12 @@ class QuerydslBasicTest {
     @Autowired
     lateinit var em: EntityManager
 
+    lateinit var queryFactory: JPAQueryFactory
+
     @BeforeEach
     fun before() {
+        queryFactory = JPAQueryFactory(em)
+
         val teamA = Team("teamA")
         val teamB = Team("teamB")
 
@@ -55,15 +60,42 @@ class QuerydslBasicTest {
 
     @Test
     fun startQuerydsl() {
-        val jpaQueryFactory = JPAQueryFactory(em)
+        // 같은 테이블을 join해야하는 경우만 선언해서 사용하면 된다.
         val m = QMember("m")
 
-        val member = jpaQueryFactory
+        val member = queryFactory
             .select(m)
             .from(m)
             .where(m.username.eq("member2"))
             .fetchOne()
 
         assertThat(member!!.username).isEqualTo("member2")
+    }
+
+    @Test
+    fun `query dsl static으로 사용`() {
+        val member = queryFactory
+            .select(member)
+            .from(member)
+            .where(member.username.eq("member2"))
+            .fetchOne()
+
+        assertThat(member!!.username).isEqualTo("member2")
+    }
+
+    @Test
+    fun search() {
+        val findMember = queryFactory
+            .selectFrom(member)
+            .where(
+                //vararg로 넘기기 때문에 ,으로 조건을 줘도 된다.
+                //,을 사용하면 null을 무시하기 때문에 동적쿼리 작성에 기가막히다.
+                member.username.eq("member2")
+                    .and(member.age.eq(29))
+            )
+            .fetchOne()
+
+        assertThat(findMember!!.username).isEqualTo("member2")
+        assertThat(findMember.age).isEqualTo(29)
     }
 }
