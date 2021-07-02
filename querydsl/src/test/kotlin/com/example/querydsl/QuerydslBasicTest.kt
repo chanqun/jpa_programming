@@ -150,4 +150,31 @@ class QuerydslBasicTest {
         assertThat(orderBy[1].username).isEqualTo("member6")
         assertThat(orderBy[2].username).isNull()
     }
+
+    @Test
+    fun paging1() {
+        val result = queryFactory
+            .selectFrom(member)
+            .orderBy(member.username.desc())
+            .offset(1) // 몇 번째 부터 끊어서 하나를 스킵하겠다.
+            .limit(2)
+            .fetch()
+
+        assertThat(result.size).isEqualTo(2)
+    }
+
+    @Test
+    fun paging2() {
+        // fetchResult total도 가져옴
+
+        val fetchResults = queryFactory
+            .selectFrom(member)
+            .orderBy(member.username.desc())
+            .offset(1)
+            .limit(2)
+            .fetchResults()
+
+        assertThat(fetchResults.total).isEqualTo(4)
+        assertThat(fetchResults.results.size).isEqualTo(2)
+    }
 }
