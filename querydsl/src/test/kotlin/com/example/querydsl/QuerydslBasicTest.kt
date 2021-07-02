@@ -222,4 +222,38 @@ class QuerydslBasicTest {
         assertThat(teamB.get(team.name)).isEqualTo("teamB")
         assertThat(teamB.get(member.age.avg())).isEqualTo(30.0)
     }
+
+    @Test
+    fun join() {
+        val fetch = queryFactory
+            .selectFrom(member)
+            .join(member.team, team) //left join도 가능
+            .where(team.name.eq("teamA"))
+            .fetch()
+
+        assertThat(fetch)
+            .extracting("username")
+            .contains("chan", "member2")
+    }
+
+    /**
+     * 연관관계 없는 조인
+     * 세타 조인
+     * 회원의 이름이 팀 이름과 같은 회원 조회
+     */
+    @Test
+    fun theta_join() {
+        em.persist(Member("teamA", 20))
+        em.persist(Member("teamB", 20))
+
+        val result = queryFactory
+            .select(member)
+            .from(member, team)
+            .where(member.username.eq(team.name))
+            .fetch()
+
+        assertThat(result)
+            .extracting("username")
+            .contains("teamA", "teamB")
+    }
 }
