@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 import javax.persistence.EntityManager
+import javax.persistence.EntityManagerFactory
+import javax.persistence.PersistenceUnit
 
 @SpringBootTest
 @Transactional
@@ -286,5 +288,26 @@ class QuerydslBasicTest {
         fetch.forEach {
             println("fetch = ${it}")
         }
+    }
+
+    @PersistenceUnit
+    lateinit var emf: EntityManagerFactory
+
+    @Test
+    fun fetchJoinNo() {
+        em.flush()
+        em.clear()
+
+        val member = queryFactory
+            .selectFrom(member)
+            .join(member.team, team)
+            .fetchJoin()
+            .where(member.username.eq("member2"))
+            .fetchOne()
+
+        val loaded = emf.persistenceUnitUtil.isLoaded(member!!.team)
+        //kotlin 에서는 이렇게 확인이 힘들듯 memeber!! 하면서 team을 가져와서
+
+        assertThat(loaded).isTrue
     }
 }
