@@ -256,4 +256,35 @@ class QuerydslBasicTest {
             .extracting("username")
             .contains("teamA", "teamB")
     }
+
+    @Test
+    fun join_on_filtering() {
+        val tuple = queryFactory
+            .select(member, team)
+            .from(member)
+            .join(member.team, team).on(team.name.eq("teamA"))
+            // left join 하면 on으로 where 절에서 필터링하는 것과 성능 동일
+            // 내부 조인이면 where 외부 조인이면 on을 사용한다.
+            .fetch()
+        
+        tuple.forEach{
+            println("tuple = ${it}")
+        }
+    }
+
+    @Test
+    fun join_on_no_relation() {
+        em.persist(Member("teamA", 20))
+        em.persist(Member("teamB", 20))
+
+        val fetch = queryFactory
+            .select(member, team)
+            .from(member)
+            .leftJoin(team).on(member.username.eq(team.name))
+            .fetch()
+
+        fetch.forEach {
+            println("fetch = ${it}")
+        }
+    }
 }

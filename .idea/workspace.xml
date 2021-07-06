@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="66d01c3e-a25b-4b34-83de-d9824b46e94f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/datajpa/src/test/kotlin/study/datajpa/repository/MemberRepositoryTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/datajpa/src/test/kotlin/study/datajpa/repository/MemberRepositoryTest.kt" afterDir="false" />
-    </list>
+    <list default="true" id="66d01c3e-a25b-4b34-83de-d9824b46e94f" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,6 +31,7 @@
       <option name="presentableId" value="Default" />
       <updated>1624320732579</updated>
       <workItem from="1624320734064" duration="5000" />
+      <workItem from="1625473580902" duration="1000" />
     </task>
     <servers />
   </component>
