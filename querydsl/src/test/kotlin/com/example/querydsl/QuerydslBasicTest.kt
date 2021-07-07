@@ -5,6 +5,8 @@ import com.example.querydsl.entity.QMember
 import com.example.querydsl.entity.QMember.member
 import com.example.querydsl.entity.QTeam.team
 import com.example.querydsl.entity.Team
+import com.querydsl.jpa.JPAExpressions
+import com.querydsl.jpa.JPAExpressions.*
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -268,8 +270,8 @@ class QuerydslBasicTest {
             // left join 하면 on으로 where 절에서 필터링하는 것과 성능 동일
             // 내부 조인이면 where 외부 조인이면 on을 사용한다.
             .fetch()
-        
-        tuple.forEach{
+
+        tuple.forEach {
             println("tuple = ${it}")
         }
     }
@@ -309,5 +311,84 @@ class QuerydslBasicTest {
         //kotlin 에서는 이렇게 확인이 힘들듯 memeber!! 하면서 team을 가져와서
 
         assertThat(loaded).isTrue
+    }
+
+    /**
+     * 나이가 가장 많은 회원을 조회
+     */
+    @Test
+    fun subQuery() {
+
+        val memberSub = QMember("memberSub")
+
+        val result = queryFactory
+            .selectFrom(member)
+            .where(
+                member.age.eq(
+                    select(memberSub.age.max())
+                        .from(memberSub)
+                )
+            )
+            .fetch()
+
+        assertThat(result).extracting("age").containsExactly(31)
+    }
+
+    /**
+     * 나이가 평균 이상인 회원
+     */
+    @Test
+    fun subQuery2() {
+
+        val memberSub = QMember("memberSub")
+
+        val result = queryFactory
+            .selectFrom(member)
+            .where(
+                member.age.goe(
+                    select(memberSub.age.avg())
+                        .from(memberSub)
+                )
+            )
+            .fetch()
+
+        assertThat(result).extracting("age").containsExactly(30, 31)
+    }
+
+    @Test
+    fun subQueryIn() {
+
+        val memberSub = QMember("memberSub")
+
+        val result = queryFactory
+            .selectFrom(member)
+            .where(
+                member.age.`in`(
+                    select(memberSub.age)
+                        .from(memberSub)
+                        .where(memberSub.age.gt(10))
+                )
+            )
+            .fetch()
+
+        assertThat(result).extracting("age").containsExactly(28, 30, 31, 29)
+    }
+
+    @Test
+    fun selectSubQuery() {
+        val memberSub = QMember("memberSub")
+
+        val fetch = queryFactory
+            .select(
+                member.username,
+                select(memberSub.age.avg())
+                    .from(memberSub)
+            )
+            .from(member)
+            .fetch()
+
+        fetch.forEach {
+            print(it)
+        }
     }
 }
