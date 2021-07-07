@@ -5,8 +5,8 @@ import com.example.querydsl.entity.QMember
 import com.example.querydsl.entity.QMember.member
 import com.example.querydsl.entity.QTeam.team
 import com.example.querydsl.entity.Team
-import com.querydsl.jpa.JPAExpressions
-import com.querydsl.jpa.JPAExpressions.*
+import com.querydsl.core.types.dsl.CaseBuilder
+import com.querydsl.jpa.JPAExpressions.select
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -95,12 +95,12 @@ class QuerydslBasicTest {
             .where(
                 //vararg로 넘기기 때문에 ,으로 조건을 줘도 된다.
                 //,을 사용하면 null을 무시하기 때문에 동적쿼리 작성에 기가막히다.
-                member.username.eq("member2")
+                member.username.eq("member4")
                     .and(member.age.eq(29))
             )
             .fetchOne()
 
-        assertThat(findMember!!.username).isEqualTo("member2")
+        assertThat(findMember!!.username).isEqualTo("member4")
         assertThat(findMember.age).isEqualTo(29)
     }
 
@@ -109,10 +109,10 @@ class QuerydslBasicTest {
         val fetch = queryFactory
             .selectFrom(member)
             .fetch()
-
-        val fetchOne = queryFactory
-            .selectFrom(member)
-            .fetchOne()
+//
+//        val fetchOne = queryFactory
+//            .selectFrom(member)
+//            .fetchOne()
 
         val fetchFirst = queryFactory
             .selectFrom(member)
@@ -389,6 +389,38 @@ class QuerydslBasicTest {
 
         fetch.forEach {
             print(it)
+        }
+    }
+
+    @Test
+    fun basicCase() {
+        val fetch = queryFactory
+            .select(
+                member.age
+                    .`when`(28).then("스물여덟")
+                    .`when`(29).then("스물아홉")
+                    .otherwise("기타")
+            ).from(member)
+            .fetch()
+
+        fetch.forEach {
+            println(it)
+        }
+    }
+
+    @Test
+    fun complexCase() {
+        val fetch = queryFactory
+            .select(
+                CaseBuilder()
+                    .`when`(member.age.between(0, 30)).then("0-30살")
+                    .otherwise("기타")
+            )
+            .from(member)
+            .fetch()
+
+        fetch.forEach {
+            println(it)
         }
     }
 }
