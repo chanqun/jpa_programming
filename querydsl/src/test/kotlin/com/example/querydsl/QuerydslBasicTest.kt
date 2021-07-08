@@ -6,6 +6,7 @@ import com.example.querydsl.entity.QMember.member
 import com.example.querydsl.entity.QTeam.team
 import com.example.querydsl.entity.Team
 import com.querydsl.core.types.dsl.CaseBuilder
+import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.JPAExpressions.select
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -417,6 +418,31 @@ class QuerydslBasicTest {
                     .otherwise("기타")
             )
             .from(member)
+            .fetch()
+
+        fetch.forEach {
+            println(it)
+        }
+    }
+
+    @Test
+    fun constant() {
+        val fetch = queryFactory
+            .select(member.username, Expressions.constant("A"))
+            .from(member)
+            .fetch()
+
+        fetch.forEach {
+            println(it)
+        }
+    }
+
+    @Test
+    fun concat() {
+        val fetch = queryFactory
+            .select(member.username.concat("_").concat(member.age.stringValue()))
+            .from(member)
+            .where(member.username.eq("member2"))
             .fetch()
 
         fetch.forEach {
