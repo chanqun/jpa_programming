@@ -439,6 +439,7 @@ class QuerydslBasicTest {
 
     @Test
     fun concat() {
+        //enum을 처리할 때 많이 사용한다.
         val fetch = queryFactory
             .select(member.username.concat("_").concat(member.age.stringValue()))
             .from(member)
@@ -447,6 +448,34 @@ class QuerydslBasicTest {
 
         fetch.forEach {
             println(it)
+        }
+    }
+
+    @Test
+    fun simpleProjection() {
+        val fetch = queryFactory
+            .select(member.username)
+            .from(member)
+            .fetch()
+
+        fetch.forEach {
+            println(it)
+        }
+    }
+
+    @Test
+    fun tupleProjection() {
+        //repository를 넘어가는 것은 좋지 않다.
+        //앞단 controller에서는 뒷단의 기술을 모르는 것이 나중에 기술이 바뀔 때 유연하게 대응 가능하다.
+        //repository에서 정리하고 나갈때는 dto로 나가는 것을 추천한다.
+
+        val fetch = queryFactory
+            .select(member.username, member.age)
+            .from(member)
+            .fetch()
+
+        fetch.forEach {
+            println("${it.get(member.username)} = ${it.get(member.age)}")
         }
     }
 }
