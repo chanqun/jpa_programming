@@ -1,16 +1,20 @@
 package com.example.querydsl
 
+import com.example.querydsl.dto.MemberDto
+import com.example.querydsl.dto.QMemberDto
 import com.example.querydsl.entity.Member
 import com.example.querydsl.entity.QMember
 import com.example.querydsl.entity.QMember.member
 import com.example.querydsl.entity.QTeam.team
 import com.example.querydsl.entity.Team
+import com.querydsl.core.types.Projections
 import com.querydsl.core.types.dsl.CaseBuilder
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.JPAExpressions.select
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -476,6 +480,90 @@ class QuerydslBasicTest {
 
         fetch.forEach {
             println("${it.get(member.username)} = ${it.get(member.age)}")
+        }
+    }
+
+    @Test
+    fun findDtoJPQL() {
+        // 순수 JPA 생성자 방식만 지원함
+        val createQuery = em.createQuery(
+            "select new com.example.querydsl.dto.MemberDto(m.username, m.age) from Member m",
+            MemberDto::class.java
+        ).resultList
+
+        createQuery.forEach {
+            println(it.toString())
+        }
+    }
+
+    @Test @Disabled
+    fun findDtoBySetter() {
+        val fetch = queryFactory
+            .select(
+                Projections.bean(
+                    MemberDto::class.java,
+                    member.username,
+                    member.age
+                )
+            ).from(member)
+            .fetch()
+
+        fetch.forEach {
+            println(it.toString())
+        }
+    }
+
+    //field와 setter는 property 명이 맞아야 들어간다
+    //member.username.`as`("name"), as 하고 이름 바꿔줘야함
+    //ExpressionUtils.as(JPAExpressions.select(memberSub.age.max()).from(memberSub))
+
+    @Test @Disabled
+    fun findDtofields() {
+        val fetch = queryFactory
+            .select(
+                Projections.fields(
+                    MemberDto::class.java,
+                    member.username,
+                    member.age
+                )
+            ).from(member)
+            .fetch()
+
+        fetch.forEach {
+            println(it.toString())
+        }
+    }
+
+    @Test
+    fun findDtoconstructor() {
+        val fetch = queryFactory
+            .select(
+                Projections.constructor(
+                    MemberDto::class.java,
+                    member.username,
+                    member.age
+                )
+            ).from(member)
+            .fetch()
+
+        fetch.forEach {
+            println(it.toString())
+        }
+    }
+
+    @Test
+    fun findDtoQueryProjections() {
+        val fetch = queryFactory
+            .select(
+                QMemberDto(
+                    member.username,
+                    member.age
+                )
+            ).from(member)
+            .fetch()
+
+        fetch.forEach {
+            println(it.toString())
         }
     }
 }
