@@ -535,13 +535,15 @@ class QuerydslBasicTest {
     }
 
     @Test
-    fun findDtoconstructor() {
+    fun findDtoConstructor() {
+        // 런타임 오류가 발생할 수 있음
         val fetch = queryFactory
             .select(
                 Projections.constructor(
                     MemberDto::class.java,
                     member.username,
                     member.age
+                    //member.id 여기서 추가로 다른 것이 들어가서 런타임 오류가 발생할 수 있음
                 )
             ).from(member)
             .fetch()
@@ -553,6 +555,10 @@ class QuerydslBasicTest {
 
     @Test
     fun findDtoQueryProjections() {
+        // memberdto에 queryprojection달면 QMemberDto도 생긴다.
+        // 컴파일 오류로 많은 것을 잡을 수 있음
+        // 하지만 memberdto 자체가 querydsl의 영향을 받게 됨
+
         val fetch = queryFactory
             .select(
                 QMemberDto(
