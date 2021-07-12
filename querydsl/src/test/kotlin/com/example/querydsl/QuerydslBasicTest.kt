@@ -7,6 +7,7 @@ import com.example.querydsl.entity.QMember
 import com.example.querydsl.entity.QMember.member
 import com.example.querydsl.entity.QTeam.team
 import com.example.querydsl.entity.Team
+import com.querydsl.core.BooleanBuilder
 import com.querydsl.core.types.Projections
 import com.querydsl.core.types.dsl.CaseBuilder
 import com.querydsl.core.types.dsl.Expressions
@@ -496,7 +497,8 @@ class QuerydslBasicTest {
         }
     }
 
-    @Test @Disabled
+    @Test
+    @Disabled
     fun findDtoBySetter() {
         val fetch = queryFactory
             .select(
@@ -517,7 +519,8 @@ class QuerydslBasicTest {
     //member.username.`as`("name"), as 하고 이름 바꿔줘야함
     //ExpressionUtils.as(JPAExpressions.select(memberSub.age.max()).from(memberSub))
 
-    @Test @Disabled
+    @Test
+    @Disabled
     fun findDtofields() {
         val fetch = queryFactory
             .select(
@@ -571,5 +574,33 @@ class QuerydslBasicTest {
         fetch.forEach {
             println(it.toString())
         }
+    }
+
+    @Test
+    fun dynamicQuery_BooleanBuilder() {
+        val usernameParam = "member2"
+        val ageParam = 30
+
+        val result = searchMember1(usernameParam, ageParam)
+
+        assertThat(result.size).isEqualTo(1)
+    }
+
+    private fun searchMember1(usernameParam: String?, ageParam: Int?): List<Member> {
+        //초기값으로 setting 할 수 있음
+        val builder = BooleanBuilder()
+
+        if (usernameParam != null) {
+            builder.and(member.username.eq(usernameParam))
+        }
+
+        if (ageParam != null) {
+            builder.and(member.age.eq(ageParam))
+        }
+
+        return queryFactory
+            .selectFrom(member)
+            .where(builder)
+            .fetch()
     }
 }
