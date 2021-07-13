@@ -9,6 +9,7 @@ import com.example.querydsl.entity.QTeam.team
 import com.example.querydsl.entity.Team
 import com.querydsl.core.BooleanBuilder
 import com.querydsl.core.types.Projections
+import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.core.types.dsl.CaseBuilder
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.JPAExpressions.select
@@ -602,5 +603,42 @@ class QuerydslBasicTest {
             .selectFrom(member)
             .where(builder)
             .fetch()
+    }
+
+    @Test
+    fun `dynamic Query where문`() {
+        val usernameParam = "member2"
+        val ageParam = 30
+
+        val result = searchMember2(usernameParam, ageParam)
+
+        assertThat(result.size).isEqualTo(1)
+    }
+
+    private fun searchMember2(usernameParam: String?, ageParam: Int?): List<Member> {
+//        return queryFactory
+//            .selectFrom(member)
+//            .where(usernameEq(usernameParam), ageEq(ageParam))
+//            .fetch()
+        return queryFactory
+            .selectFrom(member)
+            .where(allEq(usernameParam, ageParam))
+            .fetch()
+    }
+
+    private fun ageEq(ageParam: Int?): BooleanExpression? {
+        return ageParam?.run { member.age.eq(ageParam) }
+    }
+
+    private fun usernameEq(usernameParam: String?): BooleanExpression? {
+        if (usernameParam == null) {
+            return null
+        }
+        return member.username.eq(usernameParam)
+    }
+
+    //광고 상태 isServiceable, 날짜가 IN 등 재사용이 가능하다.
+    private fun allEq(usernameParam: String?, ageParam: Int?): BooleanExpression? {
+        return usernameEq(usernameParam)?.and(ageEq(ageParam))
     }
 }
