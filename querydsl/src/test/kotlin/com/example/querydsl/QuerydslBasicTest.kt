@@ -641,4 +641,43 @@ class QuerydslBasicTest {
     private fun allEq(usernameParam: String?, ageParam: Int?): BooleanExpression? {
         return usernameEq(usernameParam)?.and(ageEq(ageParam))
     }
+
+    @Test
+    fun bulkUpdate() {
+        //db에는 update 되었지만 영속성 컨텍스트는 그대로이다.
+
+        val count = queryFactory
+            .update(member)
+            .set(member.username, "비회원")
+            .where(member.age.gt(28))
+            .execute()
+
+        println(count)
+        em.flush()
+        em.clear()
+
+        val fetch = queryFactory
+            .selectFrom(member)
+            .fetch()
+
+        fetch.forEach {
+            println(it.username)
+        }
+    }
+
+    @Test
+    fun bulkAdd() {
+        val count = queryFactory
+            .update(member)
+            .set(member.age, member.age.add(1))
+            .execute()
+    }
+
+    @Test
+    fun bulkDelete() {
+        queryFactory
+            .delete(member)
+            .where(member.age.gt(18))
+            .execute()
+    }
 }
