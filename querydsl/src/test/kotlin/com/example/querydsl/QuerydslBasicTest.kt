@@ -680,4 +680,34 @@ class QuerydslBasicTest {
             .where(member.age.gt(18))
             .execute()
     }
+
+    @Test @Disabled
+    fun `SQL function`() {
+        //H2Dialect 에 등록된 함수를 써야함, 등록해서 쓰거나 함
+        val fetch = queryFactory
+            .select(
+                Expressions.stringTemplate("function('replace', {0}, {1}, {2})", member.username, "member", "M")
+            ).from(member)
+            .fetch()
+
+        fetch.forEach {
+            println(it)
+        }
+    }
+
+    @Test
+    fun sqlFunction2() {
+        val fetch = queryFactory
+            .select(member.username)
+            .from(member)
+//            .where(member.username.eq(
+//                Expressions.stringTemplate("function('lower', {0})", member.username
+//                )))
+            .where(member.username.eq(member.username.lower()))
+            .fetch()
+
+        fetch.forEach {
+            println(it)
+        }
+    }
 }
