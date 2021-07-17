@@ -90,8 +90,7 @@ class MemberJpaRepository(
             .where(
                 usernameEq(condition.username),
                 teamNameEq(condition.teamName),
-                ageGoe(condition.ageGoe),
-                ageLoe(condition.ageLoe)
+                ageBetween(condition.ageGoe, condition.ageLoe)
             )
             .fetch()
     }
@@ -108,8 +107,8 @@ class MemberJpaRepository(
         }
     }
 
-    private fun ageBetween(ageLoe: Int?, ageGoe: Int?): BooleanExpression? {
-        return ageLoe(ageLoe)?.and(ageLoe(ageLoe))
+    private fun ageBetween(ageGoe: Int?, ageLoe: Int?): BooleanExpression? {
+        return ageGoe(ageGoe)?.and(ageLoe(ageLoe))
     }
 
     private fun ageGoe(ageGoe: Int?): BooleanExpression? {
