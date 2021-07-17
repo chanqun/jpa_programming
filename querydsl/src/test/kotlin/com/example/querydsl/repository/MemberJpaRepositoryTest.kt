@@ -74,7 +74,8 @@ class MemberJpaRepositoryTest {
         condition.ageLoe = 40
         condition.teamName = "teamB"
 
-        val result = memberJpaRepository.searchByBuilder(condition)
+        //val result = memberJpaRepository.searchByBuilder(condition)
+        val result = memberJpaRepository.search(condition)
 
         assertThat(result).extracting("username").containsExactly("member4")
     }

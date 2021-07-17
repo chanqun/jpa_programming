@@ -7,6 +7,7 @@ import com.example.querydsl.entity.Member
 import com.example.querydsl.entity.QMember.member
 import com.example.querydsl.entity.QTeam.team
 import com.querydsl.core.BooleanBuilder
+import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.stereotype.Repository
 import org.springframework.util.StringUtils.hasText
@@ -71,5 +72,55 @@ class MemberJpaRepository(
             .leftJoin(member.team, team)
             .where(builder)
             .fetch()
+    }
+
+    fun search(condition: MemberSearchCondition): List<MemberTeamDto> {
+        return queryFactory
+            .select(
+                QMemberTeamDto(
+                    member.id.`as`("memberId"),
+                    member.username,
+                    member.age,
+                    team.id.`as`("teamId"),
+                    team.name.`as`("teamName")
+                )
+            )
+            .from(member)
+            .leftJoin(member.team, team)
+            .where(
+                usernameEq(condition.username),
+                teamNameEq(condition.teamName),
+                ageGoe(condition.ageGoe),
+                ageLoe(condition.ageLoe)
+            )
+            .fetch()
+    }
+
+    private fun usernameEq(username: String?): BooleanExpression? {
+        return username?.run {
+            member.username.eq(username)
+        }
+    }
+
+    private fun teamNameEq(teamName: String?): BooleanExpression? {
+        return teamName?.run {
+            team.name.eq(teamName)
+        }
+    }
+
+    private fun ageBetween(ageLoe: Int?, ageGoe: Int?): BooleanExpression? {
+        return ageLoe(ageLoe)?.and(ageLoe(ageLoe))
+    }
+
+    private fun ageGoe(ageGoe: Int?): BooleanExpression? {
+        return ageGoe?.run {
+            member.age.goe(ageGoe)
+        }
+    }
+
+    private fun ageLoe(ageLoe: Int?): BooleanExpression? {
+        return ageLoe.run {
+            member.age.loe(ageLoe)
+        }
     }
 }
