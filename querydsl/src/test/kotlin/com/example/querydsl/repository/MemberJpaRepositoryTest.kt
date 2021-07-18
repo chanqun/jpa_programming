@@ -2,6 +2,7 @@ package com.example.querydsl.repository
 
 import com.example.querydsl.dto.MemberSearchCondition
 import com.example.querydsl.entity.Member
+import com.example.querydsl.entity.QMember
 import com.example.querydsl.entity.Team
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -111,5 +112,35 @@ class MemberJpaRepositoryTest {
 
         assertThat(result.size).isEqualTo(3)
         assertThat(result.content).extracting("username").containsExactly("member1", "member2", "member3")
+    }
+
+    @Test
+    fun querydslPredicateExecutorTest() {
+        //client 가 querydsl 에 의존하게 된다.
+        val teamA = Team("teamA")
+        val teamB = Team("teamB")
+
+        em.persist(teamA)
+        em.persist(teamB)
+
+        val member1 = Member("member1", 10, teamA)
+        val member2 = Member("member2", 20, teamA)
+
+        val member3 = Member("member3", 30, teamB)
+        val member4 = Member("member4", 40, teamB)
+
+        em.persist(member1)
+        em.persist(member2)
+        em.persist(member3)
+        em.persist(member4)
+
+        em.flush()
+        em.clear()
+
+        val member = QMember.member
+        val findAll = memberRepository.findAll(member.age.between(10, 40).and(member.username.eq("member1")))
+        findAll.forEach{
+            println(it)
+        }
     }
 }
