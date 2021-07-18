@@ -19,9 +19,6 @@ class MemberJpaRepositoryTest {
     @Autowired
     lateinit var memberRepository: MemberRepository
 
-    @Autowired
-    lateinit var memberJpaRepository: MemberJpaRepository
-
     @Test
     fun basicTest() {
         val member = Member("member1", 10)
@@ -39,10 +36,10 @@ class MemberJpaRepositoryTest {
         val member = Member("member1", 10)
         memberRepository.save(member)
 
-        val result3 = memberJpaRepository.findAll()
+        val result3 = memberRepository.findAll()
         assertThat(result3).containsExactly(member)
 
-        val result4 = memberJpaRepository.findByUsername("member1")
+        val result4 = memberRepository.findByUsername("member1")
         assertThat(result4).containsExactly(member)
     }
 
@@ -75,7 +72,7 @@ class MemberJpaRepositoryTest {
         condition.teamName = "teamB"
 
         //val result = memberJpaRepository.searchByBuilder(condition)
-        val result = memberJpaRepository.search(condition)
+        val result = memberRepository.search(condition)
 
         assertThat(result).extracting("username").containsExactly("member4")
     }
