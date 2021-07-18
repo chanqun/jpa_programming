@@ -7,6 +7,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
 import org.springframework.transaction.annotation.Transactional
 import javax.persistence.EntityManager
 
@@ -75,5 +76,40 @@ class MemberJpaRepositoryTest {
         val result = memberRepository.search(condition)
 
         assertThat(result).extracting("username").containsExactly("member4")
+    }
+
+    @Test
+    fun searchPageSimple() {
+        val teamA = Team("teamA")
+        val teamB = Team("teamB")
+
+        em.persist(teamA)
+        em.persist(teamB)
+
+        val member1 = Member("member1", 10, teamA)
+        val member2 = Member("member2", 20, teamA)
+
+        val member3 = Member("member3", 30, teamB)
+        val member4 = Member("member4", 40, teamB)
+
+        em.persist(member1)
+        em.persist(member2)
+        em.persist(member3)
+        em.persist(member4)
+
+        em.flush()
+        em.clear()
+
+        val condition = MemberSearchCondition()
+        //조건이 다 빠지는 경우에는 쿼리가 데이타를 다 가져온다. 동적쿼리를 할 때는 기본 쿼리를 두거나 limit 를 두는 것이 좋다.
+
+        val pageRequest = PageRequest.of(0, 3)
+
+        //val result = memberJpaRepository.searchByBuilder(condition)
+        //val result = memberRepository.searchPageSimple(condition, pageRequest)
+        val result = memberRepository.searchPageComplex(condition, pageRequest)
+
+        assertThat(result.size).isEqualTo(3)
+        assertThat(result.content).extracting("username").containsExactly("member1", "member2", "member3")
     }
 }
